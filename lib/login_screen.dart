@@ -1,7 +1,8 @@
+
 import 'package:flutter/material.dart';
 import 'package:food_donation/register_screen.dart';
+import 'package:food_donation/guest_mode.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -21,7 +22,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final supabase = Supabase.instance.client;
 
- 
+  // Baby Blue & Soft Grey Theme
+  static const Color buttonBlue = Color(0xFF83AEC5);
+  static const Color backgroundColor = Color(0xFFF5F6F7);
+  static const Color textColor = Color(0xFF526D7D);
+  static const Color softGrey = Color(0xFFD4D8DC);
+
   Future<void> _login() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -30,6 +36,9 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
+      // Exit Guest Mode before normal login
+      guestMode.value = false;
+
       await supabase.auth.signInWithPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
@@ -40,10 +49,9 @@ class _LoginScreenState extends State<LoginScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Login Successful!'),
-          backgroundColor: Colors.green,
+          backgroundColor: buttonBlue,
         ),
       );
-
 
     } on AuthException catch (e) {
       if (!mounted) return;
@@ -83,7 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F8F5),
+      backgroundColor: backgroundColor,
 
       body: SafeArea(
         child: Center(
@@ -94,23 +102,23 @@ class _LoginScreenState extends State<LoginScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
 
-                
+                // App Icon
                 const Icon(
                   Icons.volunteer_activism,
                   size: 85,
-                  color: Color(0xFF2E8B57),
+                  color: buttonBlue,
                 ),
 
                 const SizedBox(height: 15),
 
-               
+                // App Name
                 const Text(
                   'MealShare',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 34,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF2E8B57),
+                    color: textColor,
                   ),
                 ),
 
@@ -122,13 +130,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 15,
-                    color: Colors.black54,
+                    color: Colors.blueGrey,
                   ),
                 ),
 
                 const SizedBox(height: 28),
 
-               
+                // Login Card
                 Center(
                   child: Container(
                     width: double.infinity,
@@ -137,8 +145,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
 
                     child: Card(
-                      elevation: 6,
+                      elevation: 5,
                       color: Colors.white,
+                      shadowColor: softGrey.withValues(alpha: 0.6),
+
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
@@ -160,6 +170,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 style: TextStyle(
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
+                                  color: textColor,
                                 ),
                               ),
 
@@ -175,19 +186,39 @@ class _LoginScreenState extends State<LoginScreen> {
 
                               const SizedBox(height: 22),
 
-                              
+                              // Email Field
                               TextFormField(
                                 controller: _emailController,
                                 keyboardType: TextInputType.emailAddress,
 
                                 decoration: InputDecoration(
                                   labelText: 'Email Address',
+
                                   prefixIcon: const Icon(
                                     Icons.email_outlined,
+                                    color: buttonBlue,
                                   ),
+
+                                  filled: true,
+                                  fillColor: backgroundColor,
 
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
+                                  ),
+
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: const BorderSide(
+                                      color: softGrey,
+                                    ),
+                                  ),
+
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: const BorderSide(
+                                      color: buttonBlue,
+                                      width: 2,
+                                    ),
                                   ),
                                 ),
 
@@ -211,15 +242,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
                               const SizedBox(height: 15),
 
-                            
+                              // Password Field
                               TextFormField(
                                 controller: _passwordController,
                                 obscureText: _obscurePassword,
 
                                 decoration: InputDecoration(
                                   labelText: 'Password',
+
                                   prefixIcon: const Icon(
                                     Icons.lock_outline,
+                                    color: buttonBlue,
                                   ),
 
                                   suffixIcon: IconButton(
@@ -227,6 +260,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       _obscurePassword
                                           ? Icons.visibility_off
                                           : Icons.visibility,
+                                      color: buttonBlue,
                                     ),
 
                                     onPressed: () {
@@ -237,8 +271,26 @@ class _LoginScreenState extends State<LoginScreen> {
                                     },
                                   ),
 
+                                  filled: true,
+                                  fillColor: backgroundColor,
+
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
+                                  ),
+
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: const BorderSide(
+                                      color: softGrey,
+                                    ),
+                                  ),
+
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: const BorderSide(
+                                      color: buttonBlue,
+                                      width: 2,
+                                    ),
                                   ),
                                 ),
 
@@ -257,7 +309,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                               const SizedBox(height: 22),
 
-                              
+                              // Login Button
                               SizedBox(
                                 height: 48,
 
@@ -265,8 +317,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   onPressed: _isLoading ? null : _login,
 
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        const Color(0xFF2E8B57),
+                                    backgroundColor: buttonBlue,
                                     foregroundColor: Colors.white,
 
                                     shape: RoundedRectangleBorder(
@@ -290,7 +341,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                               const SizedBox(height: 12),
 
-                              
+                              // Register Navigation
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
 
@@ -314,12 +365,49 @@ class _LoginScreenState extends State<LoginScreen> {
                                     child: const Text(
                                       'Register',
                                       style: TextStyle(
-                                        color: Color(0xFF2E8B57),
+                                        color: buttonBlue,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                   ),
                                 ],
+                              ),
+
+                              const Divider(height: 20),
+
+                              // Continue as Guest Button
+                              SizedBox(
+                                height: 48,
+
+                                child: OutlinedButton.icon(
+                                  onPressed: () {
+                                    guestMode.value = true;
+                                  },
+
+                                  icon: const Icon(
+                                    Icons.person_outline,
+                                  ),
+
+                                  label: const Text(
+                                    'Continue as Guest',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: textColor,
+
+                                    side: const BorderSide(
+                                      color: buttonBlue,
+                                    ),
+
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                  ),
+                                ),
                               ),
                             ],
                           ),
